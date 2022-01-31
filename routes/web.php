@@ -31,6 +31,9 @@ Route::middleware('auth')
     ->group(function() {
         //rotte
         Route::get('/', 'HomeController@index')->name('home');
+
+        // rotte risorse
+        Route::resource('/posts', 'PostsController');
     });
 
 
