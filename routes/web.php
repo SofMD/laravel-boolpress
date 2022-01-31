@@ -14,5 +14,28 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('guests.home');
 });
+
+
+//rotte per autentificazione
+Auth::routes();
+
+
+// //rotte per area admin
+// Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware('auth')
+    ->namespace('Admin')
+    ->name('admin.')
+    ->prefix('admin')
+    ->group(function() {
+        //rotte
+        Route::get('/', 'HomeController@index')->name('home');
+    });
+
+
+
+
+Route::get('{any?}', function () {
+    return view('guests.home');
+})->where('any', '.*');
