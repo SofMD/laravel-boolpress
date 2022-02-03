@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Posts;
+use App\Category;
 
 class PostsController extends Controller
 {
@@ -29,7 +30,9 @@ class PostsController extends Controller
      */
     public function create()
     {
-        return view('admin.posts.create');
+        $categories = Category::all();
+
+        return view('admin.posts.create', compact('categories'));
     }
 
     /**
@@ -97,12 +100,13 @@ class PostsController extends Controller
     public function edit($id)
     {
         $post = Posts::find($id);
+        $categories = Category::all();
 
         if(! $post){
             abort(404);
         };
 
-        return view('admin.posts.edit', compact('post'));
+        return view('admin.posts.edit', compact('post', 'categories'));
     }
 
     /**
@@ -161,7 +165,8 @@ class PostsController extends Controller
     private function validation_rules() {
         return [
             'title' => 'required|max:255',
-            'content' => 'required'
+            'content' => 'required',
+            'category_id' => 'nullable|exists:categories,id',
         ];
     }
 
@@ -170,6 +175,7 @@ class PostsController extends Controller
         return [
             'required'=> 'The :attribute is a required filed!',
             'max' => 'Max :max characters allowed for the :attribute',
+            'category_id.exists' => 'The selected category does not exists.'
         ];
     }
 }

@@ -34,6 +34,9 @@ Route::middleware('auth')
 
         // rotte risorse
         Route::resource('/posts', 'PostsController');
+        
+        //category page
+        Route::get('/categories/{id}', 'CategoryController@show')->name('category');
     });
 
 
