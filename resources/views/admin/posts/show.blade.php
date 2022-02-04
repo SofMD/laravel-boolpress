@@ -23,5 +23,19 @@
                 Image ...
             </div>
         </div>
+
+        @if(!$post->tags->isEmpty())
+            <h5 class="mt-5">Tags</h5>
+
+            @foreach ($post->tags as $tag)
+                <span class="badge badge-primary"> {{ $tag->name }}</span>
+            @endforeach
+
+            
+        @else
+           <p>No tags for this post</p>
+        @endif
+
+
     </div>
 @endsection

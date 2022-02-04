@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Posts;
 use App\Category;
+use App\Tag;
 
 class PostsController extends Controller
 {
@@ -18,9 +19,10 @@ class PostsController extends Controller
     public function index()
     {
         $posts = Posts::all();
+        $tags = tag::all();
 
 
-        return view('admin.posts.index', compact('posts'));
+        return view('admin.posts.index', compact('posts', 'tags'));
     }
 
     /**
@@ -31,8 +33,9 @@ class PostsController extends Controller
     public function create()
     {
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.create', compact('categories'));
+        return view('admin.posts.create', compact('categories', 'tags'));
     }
 
     /**
@@ -71,6 +74,11 @@ class PostsController extends Controller
         $new_post->fill($data);
         $new_post->save();
 
+        //salvare in pivot la relazione tra post e form
+        if(array_key_exists('tags', $data)) {
+            $new_post->tags()->attach($data['tags']);
+        }
+
         return redirect()->route('admin.posts.show', $new_post->slug);
     }
 
@@ -101,12 +109,13 @@ class PostsController extends Controller
     {
         $post = Posts::find($id);
         $categories = Category::all();
+        $tags = Tag::all();
 
         if(! $post){
             abort(404);
         };
 
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', compact('post', 'categories', 'tags'));
     }
 
     /**
@@ -142,6 +151,13 @@ class PostsController extends Controller
 
         $post->update($data);
 
+        //update relazioni pivot tra post aggiornato e tags
+        if (array_key_exists('tags', $data)) {
+            $post->tags()->sync($data['tags']);    
+        } else {
+            $post->tags()->detach();
+        }
+
         return redirect()->route('admin.posts.show', $post->slug);
     }
 
@@ -157,6 +173,8 @@ class PostsController extends Controller
 
         $post->delete();
 
+        // $post->tags()->detach();
+
         return redirect()->route('admin.posts.index')->with('deleted', $post->title);
     }
 
@@ -167,6 +185,7 @@ class PostsController extends Controller
             'title' => 'required|max:255',
             'content' => 'required',
             'category_id' => 'nullable|exists:categories,id',
+            'tags' => 'nullable|exists:tags,id',
         ];
     }
 
