@@ -9,7 +9,6 @@
 </head>
 <body>
 
-    <h1>Front office </h1>
     <div id="root"></div>
 
     <script src="{{ asset('js/front-office.js')}}"></script>
