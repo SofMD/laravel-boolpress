@@ -4,7 +4,8 @@
       <div v-if="post">
           <h1>{{ post.title }}</h1>
 
-          <h4>Category: {{ post.category.name}}</h4>
+          <h4 v-if="post.category">Category: {{ post.category.name }} </h4>
+          <h4 v-else>Uncategorized</h4>
 
           <!-- <div class="mb-5">
               <span 
@@ -17,6 +18,10 @@
               </span>
           </div> -->
           <Tags class="mb-5" :list="post.tags"/>
+
+          <figure v-if="post.cover">
+              <img :src="post.cover" :alt="post.title">
+          </figure>
 
           <p> {{ post.content }}</p>
       </div>

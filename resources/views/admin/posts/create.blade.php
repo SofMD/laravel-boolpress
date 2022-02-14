@@ -14,7 +14,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.posts.store')}}" method="POST">
+        <form action="{{ route('admin.posts.store')}}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="mb-3">
@@ -66,6 +66,16 @@
                     </span>                    
                 @endforeach
                 @error('tags')
+                  <div class="text-danger">{{ $message }}</div>
+                @enderror
+            </div>
+
+            {{-- cover image --}}
+            <div class="my-4">
+                <label class="form-label" for="cover">Post Image</label>
+                <input type="file" class="form-control-file" name="cover" id="cover">
+                
+                @error('cover')
                   <div class="text-danger">{{ $message }}</div>
                 @enderror
             </div>

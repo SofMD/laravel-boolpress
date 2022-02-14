@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Posts;
 
 class PostController extends Controller
@@ -13,8 +14,10 @@ class PostController extends Controller
         // senza impaginazione
         // $posts = Posts::all();
 
-        // con impagnazione
-        $posts = Posts::paginate(3);
+        // // con impagnazione
+        // $posts = Posts::paginate(3);
+
+        $posts = Posts::orderBy('id', 'desc')->paginate(3);
 
         return response()->json($posts);
     }
@@ -26,8 +29,10 @@ class PostController extends Controller
         // b.
         $post = Posts::where('slug', $slug)->with(['category', 'tags'])->first();
 
-        if (! $post) {
+        if(! $post) {
             $post['not_found'] = true;
+        } elseif ($post->cover) {
+            $post->cover = url('storage/' . $post->cover);
         }
 
         // ritorno dati
